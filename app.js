@@ -1,7 +1,16 @@
 const table = document.querySelector('.table');
 const body = document.querySelector('body');
 const ULlist = document.querySelector('.list');
-const titles = ['Id', 'Name', 'Last Name', 'Capsule', 'Age', 'City','Gender','Hobby'];
+idDiv = document.querySelector('.id')
+nameDiv = document.querySelector('.name')
+lastNameDiv = document.querySelector('.last');
+capsuleDiv= document.querySelector('.capsule');
+ageDiv = document.querySelector('.age');
+cityDiv = document.querySelector('.city');
+genderDiv = document.querySelector('.gender');
+hobbyDiv = document.querySelector('.hobby');
+let sortArr = [];
+let changeSortArr = [];
 const fetchData = async (url) => {
    try {
       const response = await fetch(url);
@@ -16,6 +25,7 @@ const getDataOfPpl = async () =>{
    const group2 = await fetchData('https://capsules7.herokuapp.com/api/group/two')
    const group1 = await fetchData('https://capsules7.herokuapp.com/api/group/one')
    const arrOfOfIds = group1.concat(group2);
+   arrOfOfIds.sort((a, b) => a.id - b.id)
    const arrOfPromiseOfIds = [];
    for (let item of arrOfOfIds){
       const fetchedIds = fetchData(`https://capsules7.herokuapp.com/api/user/${item.id}`);
@@ -48,8 +58,8 @@ const paintRow =   (arrOfData) => {
       row.appendChild(btns);
       btnDel.addEventListener('click',()=>{btnDel.parentElement.parentElement.remove()})
       btnEdit.addEventListener('click',()=>{
-         const cell=btnEdit.parentElement.parentElement.children
-        const a =cell[1].getAttribute('contenteditable')
+      const cell = btnEdit.parentElement.parentElement.children
+      const a = cell[1].getAttribute('contenteditable')
          if(a==='false'){
             for(let i=1;i<cell.length-1;i++){  
                cell[i].setAttribute('contenteditable',true)
@@ -76,11 +86,13 @@ const setSpinner = (bool) => {
      body.removeChild(spinner);
    }
 };
-const paintPage = async () => {
-   let isLoading = true;
+const paintPage = async (changeSortArr) => {
+   table.innerHTML=''
+   table.innerHTML='<div class="row1"><div class="cell1 id">Id</div><div class="cell1 name">Name</div><div class="cell1 last">Last Name</div><div class="cell1 capsule">Capsule</div><div class="cell1 age">Age</div><div class="cell1 city">City</div><div class="cell1 gender">Gender</div><div class="cell1 hobby">Hobby</div></div>'
+   isLoading = true;
    setSpinner(isLoading);
-   const charDataArr = await getDataOfPpl();
-   charDataArr.forEach((char) => {
+   changeSortArr = await getDataOfPpl();
+   changeSortArr.forEach((char) => {
      const newArr = [char.id, char.firstName, char.lastName, char.capsule, char.age,char.city,char.gender,char.hobby,];
      paintRow(newArr);
    });
@@ -90,11 +102,11 @@ const paintPage = async () => {
 const restBtn = document.querySelector('.button-reset');
 restBtn.addEventListener('click',()=>{
    table.innerHTML=''
-   table.innerHTML='<div class="row1"><div class="cell1">Id</div><div class="cell1">Name</div><div class="cell1">Last Name</div><div class="cell1">Capsule</div><div class="cell1">Age</div><div class="cell1">City</div><div class="cell1">Gender</div><div class="cell1">Hobby</div></div>'
+   table.innerHTML='<div class="row1"><div class="cell1 id">Id</div><div class="cell1 name">Name</div><div class="cell1 last">Last Name</div><div class="cell1 capsule">Capsule</div><div class="cell1 age">Age</div><div class="cell1 city">City</div><div class="cell1 gender">Gender</div><div class="cell1 hobby">Hobby</div></div>'
    paintPage()
 })
-paintPage()
 
+paintPage()
 
 
 
